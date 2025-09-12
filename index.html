@@ -8,12 +8,10 @@
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
-    <script src="https://unpkg.com/feather-icons"></script>
     <link rel="stylesheet" href="Style.css">
-    <script src="script.js" defer></script> 
 </head>
-
 <body class="font-sans bg-gray-50 min-h-screen">
+    <!-- Header & Hero -->
     <div class="gradient-bg text-white pb-20">
         <div class="container mx-auto px-4 pt-10">
             <header class="flex justify-between items-center mb-10">
@@ -32,6 +30,7 @@
                 <p class="text-white text-opacity-80">Check any URL for phishing, malware, and scams</p>
             </div>
 
+            <!-- URL Input -->
             <div class="bg-white rounded-xl p-4 shadow-xl max-w-md mx-auto" data-aos="fade-up" data-aos-delay="100">
                 <div class="flex items-center mb-4">
                     <i data-feather="link" class="text-gray-500 mr-2"></i>
@@ -53,7 +52,9 @@
         </div>
     </div>
 
+    <!-- Results Section -->
     <div class="container mx-auto px-4 -mt-10" id="resultsSection" style="display: none;">
+        <!-- Analysis Card -->
         <div class="bg-white rounded-xl result-card p-6 mb-8" data-aos="fade-up">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="font-bold text-lg">Analysis Results</h3>
@@ -115,6 +116,7 @@
             </div>
         </div>
 
+        <!-- Safety Tips Card -->
         <div class="bg-white rounded-xl result-card p-6" data-aos="fade-up" data-aos-delay="100">
             <h3 class="font-bold text-lg mb-4">Safety Tips</h3>
             <div class="space-y-4">
@@ -149,10 +151,11 @@
         </div>
     </div>
 
+    <!-- About Section -->
     <!-- Project Description Section -->
     <div class="container mx-auto px-4 py-6">
         <div class="bg-white rounded-xl p-6 shadow-lg mb-6" data-aos="fade-up">
-            <h3 class="font-bold text-xl mb-4 text-center">About This Project</h3>
+            <h3 class="font-bold text-xl mb-4 text-center">About This Product</h3>
             <ul class="list-decimal list-inside space-y-2 text-gray-700">
                 <li>A clean, mobile-first interface with gradient background</li>
                 <li>Interactive URL input field with analysis button</li>
@@ -174,6 +177,27 @@
 
     <!-- Bottom Navigation -->
     <div class="fixed bottom-0 left-0 right-0 bg-white shadow-lg">
+        <div class="container mx-auto px-4 py-3 flex justify-around">
+            <button class="flex flex-col items-center text-blue-500">
+                <i data-feather="home" class="w-5 h-5"></i>
+                <span class="text-xs mt-1">Home</span>
+            </button>
+            <button class="flex flex-col items-center text-gray-400">
+                <i data-feather="history" class="w-5 h-5"></i>
+                <span class="text-xs mt-1">History</span>
+            </button>
+            <button class="flex flex-col items-center text-gray-400">
+                <i data-feather="bookmark" class="w-5 h-5"></i>
+                <span class="text-xs mt-1">Saved</span>
+            </button>
+            <button class="flex flex-col items-center text-gray-400">
+                <i data-feather="user" class="w-5 h-5"></i>
+                <span class="text-xs mt-1">Profile</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="fixed bottom-0 left-0 right-0 bg-white shadow-lg">
         <div class="container mx-auto px-4 py-3">
             <div class="flex justify-center space-x-12">
                 <button class="flex flex-col items-center text-blue-500">
@@ -187,4 +211,34 @@
                 <button class="flex flex-col items-center text-gray-400">
                     <i data-feather="bookmark" class="w-5 h-5"></i>
                     <span class="text-xs mt-1 text-center">Saved</span>
-                </button
+                </button>
+
+    <!-- Scripts -->
+    <script>
+        AOS.init();
+        feather.replace();
+
+        // URL Analyzer
+        document.getElementById('checkButton').addEventListener('click', function() {
+            const urlInput = document.getElementById('urlInput').value;
+            if(urlInput) {
+                this.innerHTML = '<i data-feather="loader" class="w-5 h-5 mr-2 animate-spin"></i>Analyzing...';
+                feather.replace();
+                setTimeout(() => {
+                    document.getElementById('resultsSection').style.display = 'block';
+                    const domain = urlInput.replace(/(https?:\/\/)?(www\.)?/, '').split('/')[0];
+                    document.getElementById('domainDisplay').textContent = domain;
+                    const trustScore = Math.floor(Math.random() * 100);
+                    document.getElementById('trustBar').style.width = trustScore + '%';
+                    document.getElementById('domainAge').textContent = (Math.floor(Math.random() * 5) + 1) + ' years';
+                    const reputations = ['Poor', 'Fair', 'Good', 'Excellent'];
+                    document.getElementById('reputationScore').textContent = reputations[Math.floor(Math.random() * reputations.length)];
+                    this.innerHTML = '<i data-feather="search" class="w-5 h-5 mr-2"></i>Analyze Link';
+                    feather.replace();
+                    document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
+                }, 1500);
+            }
+        });
+    </script>
+</body>
+</html>
