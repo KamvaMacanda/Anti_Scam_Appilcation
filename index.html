@@ -9,18 +9,9 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
     <script src="https://unpkg.com/feather-icons"></script>
-     <style>
-        .gradient-bg {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-        .trust-meter {
-            transition: all 0.5s ease;
-        }
-        .result-card {
-            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.2);
-        }
+    <link rel="stylesheet" href="Style.css"> 
         </head>
-        <body class="font-sans bg-gray-50 min-h-screen">
+<body class="font-sans bg-gray-50 min-h-screen">
     <div class="gradient-bg text-white pb-20">
         <div class="container mx-auto px-4 pt-10">
             <header class="flex justify-between items-center mb-10">
@@ -32,4 +23,75 @@
                     <i data-feather="settings" class="w-5 h-5"></i>
                 </button>
             </header>
-   
+
+            <div class="text-center mb-10" data-aos="fade-up">
+                <h2 class="text-3xl font-bold mb-2">Is this link safe?</h2>
+                <p class="text-white text-opacity-80">Check any URL for phishing, malware, and scams</p>
+            </div>
+
+            <div class="bg-white rounded-xl p-4 shadow-xl max-w-md mx-auto" data-aos="fade-up" data-aos-delay="100">
+                <div class="flex items-center mb-4">
+                    <i data-feather="link" class="text-gray-500 mr-2"></i>
+                    <input 
+                        type="text" 
+                        placeholder="Paste URL here..." 
+                        class="flex-1 outline-none text-gray-700 placeholder-gray-400"
+                        id="urlInput"
+                    >
+                </div>
+                <button 
+                    id="checkButton"
+                    class="gradient-bg w-full py-3 rounded-lg text-white font-medium flex items-center justify-center"
+                >
+                    <i data-feather="search" class="w-5 h-5 mr-2"></i>
+                    Analyze Link
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mx-auto px-4 -mt-10" id="resultsSection" style="display: none;">
+        <div class="bg-white rounded-xl result-card p-6 mb-8" data-aos="fade-up">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-bold text-lg">Analysis Results</h3>
+                <div class="flex items-center">
+                    <span class="text-xs bg-gray-100 px-2 py-1 rounded">Just now</span>
+                    <button class="ml-2 text-gray-400">
+                        <i data-feather="refresh-cw" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <div class="flex items-center mb-2">
+                    <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mr-2">
+                        <i data-feather="globe" class="w-4 h-4 text-blue-500"></i>
+                    </div>
+                    <span class="font-medium" id="domainDisplay">example.com</span>
+                </div>
+                
+                <div class="trust-meter h-3 bg-gray-200 rounded-full overflow-hidden mb-2">
+                    <div class="h-full bg-green-500 w-0" id="trustBar"></div>
+                </div>
+                <div class="flex justify-between text-xs text-gray-500">
+                    <span>Risky</span>
+                    <span>Safe</span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="bg-gray-50 p-3 rounded-lg">
+                    <div class="flex items-center mb-1">
+                        <i data-feather="clock" class="w-4 h-4 text-gray-500 mr-1"></i>
+                        <span class="text-xs text-gray-500">Age</span>
+                    </div>
+                    <span class="font-medium" id="domainAge">2 years</span>
+                </div>
+                <div class="bg-gray-50 p-3 rounded-lg">
+                    <div class="flex items-center mb-1">
+                        <i data-feather="bar-chart-2" class="w-4 h-4 text-gray-500 mr-1"></i>
+                        <span class="text-xs text-gray-500">Reputation</span>
+                    </div>
+                    <span class="font-medium" id="reputationScore">Good</span>
+                </div>
+            </div>
