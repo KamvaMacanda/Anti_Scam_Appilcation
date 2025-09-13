@@ -76,7 +76,7 @@
   </div>
 
   <script>
-    // Initialize AOS and Feather icons
+  // Initialize AOS and Feather icons
     AOS.init();
     feather.replace();
 
@@ -90,6 +90,7 @@
       loginForm.classList.remove('hidden');
       registerForm.classList.add('hidden');
       loginTab.classList.add('bg-indigo-600','text-white');
+      loginTab.classList.remove('text-gray-600');
       registerTab.classList.remove('bg-indigo-600','text-white');
       registerTab.classList.add('text-gray-600');
     });
@@ -98,17 +99,37 @@
       registerForm.classList.remove('hidden');
       loginForm.classList.add('hidden');
       registerTab.classList.add('bg-indigo-600','text-white');
+      registerTab.classList.remove('text-gray-600');
       loginTab.classList.remove('bg-indigo-600','text-white');
       loginTab.classList.add('text-gray-600');
     });
 
-    // Registration Form Submit -> Redirect to Index
+    // Registration Form Submit -> Redirect to Login tab
     registerForm.addEventListener('submit', function(e) {
-      e.preventDefault(); // Prevent page reload
-      alert("Account created successfully!");
-      window.location.href = "index.html"; // Redirect after registration
+      e.preventDefault(); // Prevent default form submission
+      alert("Account created successfully! Please log in.");
+      
+      // Switch to login tab
+      loginForm.classList.remove('hidden');
+      registerForm.classList.add('hidden');
+      loginTab.classList.add('bg-indigo-600','text-white');
+      loginTab.classList.remove('text-gray-600');
+      registerTab.classList.remove('bg-indigo-600','text-white');
+      registerTab.classList.add('text-gray-600');
+      
+      // Optionally, clear register form
+      registerForm.reset();
+    });
+
+    // Login Form Submit -> Redirect to dashboard (index.html)
+    loginForm.addEventListener('submit', function(e) {
+      e.preventDefault(); // Prevent default form submission
+      // Optional: Validate email/password here
+      alert("Login successful! Redirecting to dashboard...");
+      window.location.href = "index.html";
     });
   </script>
+
 
 </body>
 </html>
