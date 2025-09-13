@@ -1,41 +1,76 @@
+// Store registered user details temporarily (simulate a database)
+let registeredEmail = '';
+let registeredPassword = '';
 
-        AOS.init();
-        feather.replace();
-        
-        document.getElementById('checkButton').addEventListener('click', function() {
-            const urlInput = document.getElementById('urlInput').value;
-            if(urlInput) {
-                // Show loading state
-                this.innerHTML = '<i data-feather="loader" class="w-5 h-5 mr-2 animate-spin"></i>Analyzing...';
-                feather.replace();
-                
-                // Simulate API call
-                setTimeout(() => {
-                    // Show results
-                    document.getElementById('resultsSection').style.display = 'block';
-                    
-                    // Update UI with mock data
-                    const domain = urlInput.replace(/(https?:\/\/)?(www\.)?/, '').split('/')[0];
-                    document.getElementById('domainDisplay').textContent = domain;
-                    
-                    // Random trust score for demo
-                    const trustScore = Math.floor(Math.random() * 100);
-                    document.getElementById('trustBar').style.width = trustScore + '%';
-                    
-                    // Update other fields
-                    document.getElementById('domainAge').textContent = 
-                        Math.floor(Math.random() * 5) + 1 + ' years';
-                    
-                    const reputations = ['Poor', 'Fair', 'Good', 'Excellent'];
-                    document.getElementById('reputationScore').textContent = 
-                        reputations[Math.floor(Math.random() * reputations.length)];
-                    
-                    // Reset button
-                    this.innerHTML = '<i data-feather="search" class="w-5 h-5 mr-2"></i>Analyze Link';
-                    feather.replace();
-                    
-                    // Scroll to results
-                    document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
-                }, 1500);
-            }
-        });
+// Password validation function
+function validateRegistrationPassword() {
+  const registrationPassword = document.getElementById('registrationPassword').value;
+  const confirmPassword = document.getElementById('confirmPassword').value;
+  const message = document.getElementById('passwordMessage');
+
+  // Regex for special characters
+  const specialCharRegex = /[!@#$%^&*()_+\-={}\[\]|:;'",.<>?/]/g;
+
+  // Validate length
+  if (registrationPassword.length !== 8) {
+    message.textContent = "Password must be exactly 8 characters long.";
+    message.style.color = "red";
+    return false;
+  }
+
+  // Validate at least 2 special characters
+  const specialChars = registrationPassword.match(specialCharRegex);
+  if (!specialChars || specialChars.length < 2) {
+    message.textContent = "Password must contain at least 2 special characters.";
+    message.style.color = "red";
+    return false;
+  }
+
+  // Confirm passwords match
+  if (registrationPassword !== confirmPassword) {
+    message.textContent = "Passwords do not match.";
+    message.style.color = "red";
+    return false;
+  }
+
+  // If everything is valid
+  message.textContent = "Password is valid!";
+  message.style.color = "green";
+  return true;
+}
+
+// Handle Registration Form
+document.getElementById('registerForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  const email = document.getElementById('registerEmail').value;
+
+  if (validateRegistrationPassword()) {
+    registeredEmail = email;
+    registeredPassword = document.getElementById('registrationPassword').value;
+
+    alert("Registration successful! Please log in.");
+    
+    // Automatically switch to login form
+    document.getElementById('loginForm').classList.remove('hidden');
+    document.getElementById('registerForm').classList.add('hidden');
+  }
+});
+
+// Handle Login Form
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  const loginEmail = document.getElementById('loginEmail').value;
+  const loginPassword = document.getElementById('loginPassword').value;
+  const loginMessage = document.getElementById('loginMessage');
+
+  // Validate login credentials
+  if (loginEmail === registeredEmail && loginPassword === registeredPassword) {
+    alert("Login successful! Redirecting to homepage...");
+    window.location.href = "home.html"; // Redirect to homepage
+  } else {
+    loginMessage.textContent = "Invalid email or password.";
+    loginMessage.style.color = "red";
+  }
+});

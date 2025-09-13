@@ -8,14 +8,30 @@
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
-    <link rel="stylesheet" href="Style.css">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .auth-card {
+            backdrop-filter: blur(10px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        
+        .result-card {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .trust-meter {
+            transition: all 0.5s ease;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
 </head>
 <body class="font-sans bg-gray-50 min-h-screen">
-    <script>
-        if (!sessionStorage.getItem("loggedIn")) {
-            window.location.href = "login.html";
-        }
-    </script>
     <!-- Header & Hero -->
     <div class="gradient-bg text-white pb-20">
         <div class="container mx-auto px-4 pt-10">
@@ -30,219 +46,377 @@
                 </button>
             </header>
 
-            <div class="text-center mb-10" data-aos="fade-up">
-                <h2 class="text-3xl font-bold mb-2">Is this link safe?</h2>
-                <p class="text-white text-opacity-80">Check any URL for phishing, malware, and scams</p>
-            </div>
-
-            <!-- URL Input -->
-            <div class="bg-white rounded-xl p-4 shadow-xl max-w-md mx-auto" data-aos="fade-up" data-aos-delay="100">
-                <div class="flex items-center mb-4">
-                    <i data-feather="link" class="text-gray-500 mr-2"></i>
-                    <input 
-                        type="text" 
-                        placeholder="Paste URL here..." 
-                        class="flex-1 outline-none text-gray-700 placeholder-gray-400"
-                        id="urlInput"
-                    >
+                <div class="text-center mb-10" data-aos="fade-up">
+                    <h2 class="text-3xl font-bold mb-2">Is this link safe?</h2>
+                    <p class="text-white text-opacity-80">Check any URL for phishing, malware, and scams</p>
                 </div>
-                <button 
-                    id="checkButton"
-                    class="gradient-bg w-full py-3 rounded-lg text-white font-medium flex items-center justify-center"
-                >
-                    <i data-feather="search" class="w-5 h-5 mr-2"></i>
-                    Analyze Link
-                </button>
-            </div>
-        </div>
-    </div>
 
-    <!-- Results Section -->
-    <div class="container mx-auto px-4 -mt-10" id="resultsSection" style="display: none;">
-        <!-- Analysis Card -->
-        <div class="bg-white rounded-xl result-card p-6 mb-8" data-aos="fade-up">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="font-bold text-lg">Analysis Results</h3>
-                <div class="flex items-center">
-                    <span class="text-xs bg-gray-100 px-2 py-1 rounded">Just now</span>
-                    <button class="ml-2 text-gray-400">
-                        <i data-feather="refresh-cw" class="w-4 h-4"></i>
+                <!-- URL Input -->
+                <div class="bg-white rounded-xl p-4 shadow-xl max-w-md mx-auto" data-aos="fade-up" data-aos-delay="100">
+                    <div class="flex items-center mb-4">
+                        <i data-feather="link" class="text-gray-500 mr-2"></i>
+                        <input 
+                            type="text" 
+                            placeholder="Paste URL here..." 
+                            class="flex-1 outline-none text-gray-700 placeholder-gray-400"
+                            id="urlInput"
+                        >
+                    </div>
+                    <button 
+                        id="checkButton"
+                        class="gradient-bg w-full py-3 rounded-lg text-white font-medium flex items-center justify-center"
+                    >
+                        <i data-feather="search" class="w-5 h-5 mr-2"></i>
+                        Analyze Link
                     </button>
                 </div>
             </div>
+        </div>
 
-            <div class="mb-6">
-                <div class="flex items-center mb-2">
-                    <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mr-2">
-                        <i data-feather="globe" class="w-4 h-4 text-blue-500"></i>
+        <!-- Results Section -->
+        <div class="container mx-auto px-4 -mt-10" id="resultsSection" style="display: none;">
+            <!-- Analysis Card -->
+            <div class="bg-white rounded-xl result-card p-6 mb-8" data-aos="fade-up">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-bold text-lg">Analysis Results</h3>
+                    <div class="flex items-center">
+                        <span class="text-xs bg-gray-100 px-2 py-1 rounded">Just now</span>
+                        <button class="ml-2 text-gray-400">
+                            <i data-feather="refresh-cw" class="w-4 h-4"></i>
+                        </button>
                     </div>
-                    <span class="font-medium" id="domainDisplay">example.com</span>
                 </div>
-                
-                <div class="trust-meter h-3 bg-gray-200 rounded-full overflow-hidden mb-2">
-                    <div class="h-full bg-green-500 w-0" id="trustBar"></div>
+
+                <div class="mb-6">
+                    <div class="flex items-center mb-2">
+                        <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mr-2">
+                            <i data-feather="globe" class="w-4 h-4 text-blue-500"></i>
+                        </div>
+                        <span class="font-medium" id="domainDisplay">example.com</span>
+                    </div>
+                    
+                    <div class="trust-meter h-3 bg-gray-200 rounded-full overflow-hidden mb-2">
+                        <div class="h-full bg-green-500 w-0" id="trustBar"></div>
+                    </div>
+                    <div class="flex justify-between text-xs text-gray-500">
+                        <span>Risky</span>
+                        <span>Safe</span>
+                    </div>
                 </div>
-                <div class="flex justify-between text-xs text-gray-500">
-                    <span>Risky</span>
-                    <span>Safe</span>
+
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div class="bg-gray-50 p-3 rounded-lg">
+                        <div class="flex items-center mb-1">
+                            <i data-feather="clock" class="w-4 h-4 text-gray-500 mr-1"></i>
+                            <span class="text-xs text-gray-500">Age</span>
+                        </div>
+                        <span class="font-medium" id="domainAge">2 years</span>
+                    </div>
+                    <div class="bg-gray-50 p-3 rounded-lg">
+                        <div class="flex items-center mb-1">
+                            <i data-feather="bar-chart-2" class="w-4 h-4 text-gray-500 mr-1"></i>
+                            <span class="text-xs text-gray-500">Reputation</span>
+                        </div>
+                        <span class="font-medium" id="reputationScore">Good</span>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <div class="flex items-center">
+                        <i data-feather="check-circle" class="w-5 h-5 text-green-500 mr-2"></i>
+                        <span>No malware detected</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i data-feather="alert-triangle" class="w-5 h-5 text-yellow-500 mr-2"></i>
+                        <span>Possible phishing attempt</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i data-feather="x-circle" class="w-5 h-5 text-red-500 mr-2"></i>
+                        <span>Blacklisted in 2 databases</span>
+                    </div>
                 </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-4 mb-6">
-                <div class="bg-gray-50 p-3 rounded-lg">
-                    <div class="flex items-center mb-1">
-                        <i data-feather="clock" class="w-4 h-4 text-gray-500 mr-1"></i>
-                        <span class="text-xs text-gray-500">Age</span>
+            <!-- Safety Tips Card -->
+            <div class="bg-white rounded-xl result-card p-6" data-aos="fade-up" data-aos-delay="100">
+                <h3 class="font-bold text-lg mb-4">Safety Tips</h3>
+                <div class="space-y-4">
+                    <div class="flex">
+                        <div class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center mr-3 flex-shrink-0">
+                            <i data-feather="lock" class="w-4 h-4 text-purple-500"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-medium mb-1">Check for HTTPS</h4>
+                            <p class="text-sm text-gray-500">Legitimate sites use HTTPS to secure your connection.</p>
+                        </div>
                     </div>
-                    <span class="font-medium" id="domainAge">2 years</span>
-                </div>
-                <div class="bg-gray-50 p-3 rounded-lg">
-                    <div class="flex items-center mb-1">
-                        <i data-feather="bar-chart-2" class="w-4 h-4 text-gray-500 mr-1"></i>
-                        <span class="text-xs text-gray-500">Reputation</span>
+                    <div class="flex">
+                        <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mr-3 flex-shrink-0">
+                            <i data-feather="eye" class="w-4 h-4 text-blue-500"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-medium mb-1">Look for typos</h4>
+                            <p class="text-sm text-gray-500">Scammers often use misspelled versions of popular domains.</p>
+                        </div>
                     </div>
-                    <span class="font-medium" id="reputationScore">Good</span>
-                </div>
-            </div>
-
-            <div class="space-y-3">
-                <div class="flex items-center">
-                    <i data-feather="check-circle" class="w-5 h-5 text-green-500 mr-2"></i>
-                    <span>No malware detected</span>
-                </div>
-                <div class="flex items-center">
-                    <i data-feather="alert-triangle" class="w-5 h-5 text-yellow-500 mr-2"></i>
-                    <span>Possible phishing attempt</span>
-                </div>
-                <div class="flex items-center">
-                    <i data-feather="x-circle" class="w-5 h-5 text-red-500 mr-2"></i>
-                    <span>Blacklisted in 2 databases</span>
+                    <div class="flex">
+                        <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center mr-3 flex-shrink-0">
+                            <i data-feather="bookmark" class="w-4 h-4 text-green-500"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-medium mb-1">Bookmark trusted sites</h4>
+                            <p class="text-sm text-gray-500">Avoid typing URLs manually when possible.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Safety Tips Card -->
-        <div class="bg-white rounded-xl result-card p-6" data-aos="fade-up" data-aos-delay="100">
-            <h3 class="font-bold text-lg mb-4">Safety Tips</h3>
-            <div class="space-y-4">
-                <div class="flex">
-                    <div class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center mr-3 flex-shrink-0">
-                        <i data-feather="lock" class="w-4 h-4 text-purple-500"></i>
-                    </div>
-                    <div>
-                        <h4 class="font-medium mb-1">Check for HTTPS</h4>
-                        <p class="text-sm text-gray-500">Legitimate sites use HTTPS to secure your connection.</p>
-                    </div>
-                </div>
-                <div class="flex">
-                    <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mr-3 flex-shrink-0">
-                        <i data-feather="eye" class="w-4 h-4 text-blue-500"></i>
-                    </div>
-                    <div>
-                        <h4 class="font-medium mb-1">Look for typos</h4>
-                        <p class="text-sm text-gray-500">Scammers often use misspelled versions of popular domains.</p>
-                    </div>
-                </div>
-                <div class="flex">
-                    <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center mr-3 flex-shrink-0">
-                        <i data-feather="bookmark" class="w-4 h-4 text-green-500"></i>
-                    </div>
-                    <div>
-                        <h4 class="font-medium mb-1">Bookmark trusted sites</h4>
-                        <p class="text-sm text-gray-500">Avoid typing URLs manually when possible.</p>
-                    </div>
+        <!-- About Section -->
+        <div class="container mx-auto px-4 py-6">
+            <div class="bg-white rounded-xl p-6 shadow-lg mb-6" data-aos="fade-up">
+                <h3 class="font-bold text-xl mb-4 text-center">About This Product</h3>
+                <ul class="list-decimal list-inside space-y-2 text-gray-700">
+                    <li>Secure authentication system with demo credentials</li>
+                    <li>Clean, mobile-first interface with gradient background</li>
+                    <li>Interactive URL input field with analysis button</li>
+                    <li>Animated results section that appears after checking</li>
+                    <li>Visual trust meter with percentage indicator</li>
+                    <li>Detailed safety analysis with icons</li>
+                    <li>Helpful safety tips section</li>
+                    <li>Smooth animations using AOS</li>
+                    <li>Feather icons for a clean look</li>
+                    <li>Simulated API response with random data for demonstration</li>
+                </ul>
+                <p class="mt-4 text-gray-600 text-sm text-center">
+                  <span class="bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full">Brought to you by the protectors of the internet</span>  
+                </p>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <div class="fixed bottom-0 left-0 right-0 bg-white shadow-lg">
+            <div class="container mx-auto px-4 py-3">
+                <div class="flex justify-center space-x-12">
+                    <button class="flex flex-col items-center text-blue-500">
+                        <i data-feather="home" class="w-5 h-5"></i>
+                        <span class="text-xs mt-1 text-center">Home</span>
+                    </button>
+                    <button class="flex flex-col items-center text-gray-400">
+                        <i data-feather="history" class="w-5 h-5"></i>
+                        <span class="text-xs mt-1 text-center">History</span>
+                    </button>
+                    <button class="flex flex-col items-center text-gray-400">
+                        <i data-feather="bookmark" class="w-5 h-5"></i>
+                        <span class="text-xs mt-1 text-center">Saved</span>
+                    </button>
+                    <button class="flex flex-col items-center text-gray-400">
+                        <i data-feather="user" class="w-5 h-5"></i>
+                        <span class="text-xs mt-1 text-center">Profile</span>
+                    </button>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- About Section -->
-    <!-- Project Description Section -->
-    <div class="container mx-auto px-4 py-6">
-        <div class="bg-white rounded-xl p-6 shadow-lg mb-6" data-aos="fade-up">
-            <h3 class="font-bold text-xl mb-4 text-center">About This Product</h3>
-            <ul class="list-decimal list-inside space-y-2 text-gray-700">
-                <li>A clean, mobile-first interface with gradient background</li>
-                <li>Interactive URL input field with analysis button</li>
-                <li>Animated results section that appears after checking</li>
-                <li>Visual trust meter with percentage indicator</li>
-                <li>Detailed safety analysis with icons</li>
-                <li>Helpful safety tips section</li>
-                <li>Bottom navigation bar (common in mobile apps)</li>
-                <li>Smooth animations using AOS</li>
-                <li>Feather icons for a clean look</li>
-                <li>Simulated API response with random data for demonstration</li>
-            </ul>
-            <p class="mt-4 text-gray-600 text-sm text-center">
-                The design is fully responsive and would translate well to a React Native implementation 
-                with components like View, TextInput, TouchableOpacity, etc.
-            </p>
-        </div>
-    </div>
-
-    <!-- Bottom Navigation -->
-    <div class="fixed bottom-0 left-0 right-0 bg-white shadow-lg">
-        <div class="container mx-auto px-4 py-3 flex justify-around">
-            <button class="flex flex-col items-center text-blue-500">
-                <i data-feather="home" class="w-5 h-5"></i>
-                <span class="text-xs mt-1">Home</span>
-            </button>
-            <button class="flex flex-col items-center text-gray-400">
-                <i data-feather="history" class="w-5 h-5"></i>
-                <span class="text-xs mt-1">History</span>
-            </button>
-            <button class="flex flex-col items-center text-gray-400">
-                <i data-feather="bookmark" class="w-5 h-5"></i>
-                <span class="text-xs mt-1">Saved</span>
-            </button>
-            <button class="flex flex-col items-center text-gray-400">
-                <i data-feather="user" class="w-5 h-5"></i>
-                <span class="text-xs mt-1">Profile</span>
-            </button>
-        </div>
-    </div>
-
-    <div class="fixed bottom-0 left-0 right-0 bg-white shadow-lg">
-        <div class="container mx-auto px-4 py-3">
-            <div class="flex justify-center space-x-12">
-                <button class="flex flex-col items-center text-blue-500">
-                    <i data-feather="home" class="w-5 h-5"></i>
-                    <span class="text-xs mt-1 text-center">Home</span>
-                </button>
-                <button class="flex flex-col items-center text-gray-400">
-                    <i data-feather="history" class="w-5 h-5"></i>
-                    <span class="text-xs mt-1 text-center">History</span>
-                </button>
-                <button class="flex flex-col items-center text-gray-400">
-                    <i data-feather="bookmark" class="w-5 h-5"></i>
-                    <span class="text-xs mt-1 text-center">Saved</span>
-                </button>
 
     <!-- Scripts -->
     <script>
+        // Initialize AOS and Feather icons
         AOS.init();
         feather.replace();
 
-        // URL Analyzer
+        // Demo credentials for authentication
+        const DEMO_CREDENTIALS = {
+            email: 'demo@linktrust.com',
+            password: 'demo123'
+        };
+
+        // Store registered users (in memory)
+        let registeredUsers = [];
+
+        // DOM Elements
+        const authSection = document.getElementById('authSection');
+        const mainApp = document.getElementById('mainApp');
+        const loginTab = document.getElementById('loginTab');
+        const registerTab = document.getElementById('registerTab');
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        const loginMessage = document.getElementById('loginMessage');
+        const passwordMessage = document.getElementById('passwordMessage');
+        const userWelcome = document.getElementById('userWelcome');
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        // Tab Switching
+        loginTab.addEventListener('click', () => {
+            loginForm.classList.remove('hidden');
+            registerForm.classList.add('hidden');
+            loginTab.classList.add('bg-indigo-600','text-white');
+            loginTab.classList.remove('text-gray-600');
+            registerTab.classList.remove('bg-indigo-600','text-white');
+            registerTab.classList.add('text-gray-600');
+            loginMessage.textContent = '';
+        });
+
+        registerTab.addEventListener('click', () => {
+            registerForm.classList.remove('hidden');
+            loginForm.classList.add('hidden');
+            registerTab.classList.add('bg-indigo-600','text-white');
+            registerTab.classList.remove('text-gray-600');
+            loginTab.classList.remove('bg-indigo-600','text-white');
+            loginTab.classList.add('text-gray-600');
+            passwordMessage.textContent = '';
+        });
+
+        // Registration Form Submit
+        registerForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registrationPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            // Validate passwords match
+            if (password !== confirmPassword) {
+                passwordMessage.textContent = 'Passwords do not match!';
+                passwordMessage.className = 'text-sm mt-2 text-red-500';
+                return;
+            }
+
+            // Check if user already exists
+            const userExists = registeredUsers.some(user => user.email === email);
+            if (userExists) {
+                passwordMessage.textContent = 'User with this email already exists!';
+                passwordMessage.className = 'text-sm mt-2 text-red-500';
+                return;
+            }
+
+            // Register new user
+            registeredUsers.push({ username, email, password });
+            
+            passwordMessage.textContent = 'Account created successfully! Please log in.';
+            passwordMessage.className = 'text-sm mt-2 text-green-500';
+            
+            // Switch to login tab after 2 seconds
+            setTimeout(() => {
+                loginForm.classList.remove('hidden');
+                registerForm.classList.add('hidden');
+                loginTab.classList.add('bg-indigo-600','text-white');
+                loginTab.classList.remove('text-gray-600');
+                registerTab.classList.remove('bg-indigo-600','text-white');
+                registerTab.classList.add('text-gray-600');
+                
+                // Clear register form and messages
+                registerForm.reset();
+                passwordMessage.textContent = '';
+            }, 2000);
+        });
+
+        // Login Form Submit
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            // Check demo credentials
+            const isDemoLogin = email === DEMO_CREDENTIALS.email && password === DEMO_CREDENTIALS.password;
+            
+            // Check registered users
+            const registeredUser = registeredUsers.find(user => user.email === email && user.password === password);
+
+            if (isDemoLogin || registeredUser) {
+                loginMessage.textContent = 'Login successful! Redirecting...';
+                loginMessage.className = 'text-sm mt-2 text-green-500';
+                
+                // Show loading state
+                const submitBtn = this.querySelector('button[type="submit"]');
+                submitBtn.innerHTML = '<i data-feather="loader" class="w-5 h-5 mr-2 animate-spin"></i>Logging in...';
+                feather.replace();
+                
+                // Redirect to main app after 1.5 seconds
+                setTimeout(() => {
+                    // Set welcome message
+                    const userName = isDemoLogin ? 'Demo User' : registeredUser.username;
+                    userWelcome.textContent = `Welcome, ${userName}`;
+                    
+                    // Hide auth section and show main app
+                    authSection.classList.add('hidden');
+                    mainApp.classList.remove('hidden');
+                    
+                    // Reinitialize AOS for main app animations
+                    AOS.refresh();
+                }, 1500);
+            } else {
+                loginMessage.textContent = 'Invalid email or password. Try the demo credentials above.';
+                loginMessage.className = 'text-sm mt-2 text-red-500';
+            }
+        });
+
+        // Logout functionality
+        logoutBtn.addEventListener('click', () => {
+            // Show main app and hide auth section
+            authSection.classList.remove('hidden');
+            mainApp.classList.add('hidden');
+            
+            // Clear forms and messages
+            loginForm.reset();
+            registerForm.reset();
+            loginMessage.textContent = '';
+            passwordMessage.textContent = '';
+            
+            // Reset to login tab
+            loginForm.classList.remove('hidden');
+            registerForm.classList.add('hidden');
+            loginTab.classList.add('bg-indigo-600','text-white');
+            loginTab.classList.remove('text-gray-600');
+            registerTab.classList.remove('bg-indigo-600','text-white');
+            registerTab.classList.add('text-gray-600');
+            
+            // Hide results section
+            document.getElementById('resultsSection').style.display = 'none';
+        });
+
+        // URL Analyzer (only works when logged in)
         document.getElementById('checkButton').addEventListener('click', function() {
             const urlInput = document.getElementById('urlInput').value;
             if(urlInput) {
                 this.innerHTML = '<i data-feather="loader" class="w-5 h-5 mr-2 animate-spin"></i>Analyzing...';
                 feather.replace();
+                
                 setTimeout(() => {
                     document.getElementById('resultsSection').style.display = 'block';
                     const domain = urlInput.replace(/(https?:\/\/)?(www\.)?/, '').split('/')[0];
                     document.getElementById('domainDisplay').textContent = domain;
+                    
                     const trustScore = Math.floor(Math.random() * 100);
                     document.getElementById('trustBar').style.width = trustScore + '%';
+                    
+                    // Change color based on trust score
+                    const trustBar = document.getElementById('trustBar');
+                    if (trustScore < 30) {
+                        trustBar.className = 'h-full bg-red-500 transition-all duration-500';
+                    } else if (trustScore < 70) {
+                        trustBar.className = 'h-full bg-yellow-500 transition-all duration-500';
+                    } else {
+                        trustBar.className = 'h-full bg-green-500 transition-all duration-500';
+                    }
+                    
                     document.getElementById('domainAge').textContent = (Math.floor(Math.random() * 5) + 1) + ' years';
                     const reputations = ['Poor', 'Fair', 'Good', 'Excellent'];
                     document.getElementById('reputationScore').textContent = reputations[Math.floor(Math.random() * reputations.length)];
+                    
                     this.innerHTML = '<i data-feather="search" class="w-5 h-5 mr-2"></i>Analyze Link';
                     feather.replace();
+                    
                     document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
                 }, 1500);
             }
+        });
+
+        // Re-initialize feather icons after dynamic content changes
+        document.addEventListener('DOMContentLoaded', function() {
+            feather.replace();
         });
     </script>
 </body>
