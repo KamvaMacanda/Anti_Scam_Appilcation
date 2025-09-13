@@ -15,6 +15,11 @@
     .auth-card {
       box-shadow: 0 10px 30px -10px rgba(0,0,0,0.2);
     }
+    .error-text {
+      color: #e53e3e;
+      font-size: 0.875rem;
+      margin-top: 0.25rem;
+    }
   </style>
 </head>
 <body class="font-sans bg-gray-50 min-h-screen flex items-center justify-center">
@@ -42,11 +47,11 @@
       <form id="loginForm" class="space-y-4">
         <div class="flex items-center border rounded-lg px-3">
           <i data-feather="mail" class="text-gray-400 mr-2"></i>
-          <input type="email" placeholder="Email" class="flex-1 py-2 outline-none">
+          <input type="email" placeholder="Email" class="flex-1 py-2 outline-none" required>
         </div>
         <div class="flex items-center border rounded-lg px-3">
           <i data-feather="lock" class="text-gray-400 mr-2"></i>
-          <input type="password" placeholder="Password" class="flex-1 py-2 outline-none">
+          <input type="password" placeholder="Password" class="flex-1 py-2 outline-none" required>
         </div>
         <button class="gradient-bg w-full py-3 rounded-lg text-white font-medium flex items-center justify-center">
           <i data-feather="log-in" class="w-5 h-5 mr-2"></i> Login
@@ -63,9 +68,12 @@
           <i data-feather="mail" class="text-gray-400 mr-2"></i>
           <input type="email" placeholder="Email" class="flex-1 py-2 outline-none" required>
         </div>
-        <div class="flex items-center border rounded-lg px-3">
-          <i data-feather="lock" class="text-gray-400 mr-2"></i>
-          <input type="password" placeholder="Password" class="flex-1 py-2 outline-none" required>
+        <div class="flex flex-col">
+          <div class="flex items-center border rounded-lg px-3">
+            <i data-feather="lock" class="text-gray-400 mr-2"></i>
+            <input id="registerPassword" type="password" placeholder="Password" class="flex-1 py-2 outline-none" required>
+          </div>
+          <p id="passwordError" class="error-text hidden">Password must be at least 6 characters, include a number and a symbol.</p>
         </div>
         <button class="gradient-bg w-full py-3 rounded-lg text-white font-medium flex items-center justify-center">
           <i data-feather="user-plus" class="w-5 h-5 mr-2"></i> Register
@@ -85,6 +93,8 @@
     const registerTab = document.getElementById('registerTab');
     const loginForm = document.getElementById('loginForm');
     const registerForm = document.getElementById('registerForm');
+    const passwordInput = document.getElementById('registerPassword');
+    const passwordError = document.getElementById('passwordError');
 
     loginTab.addEventListener('click', () => {
       loginForm.classList.remove('hidden');
@@ -104,9 +114,20 @@
       loginTab.classList.add('text-gray-600');
     });
 
-    // Registration Form Submit -> Redirect to Login tab
+    // Registration Form Submit -> Validate password -> Redirect to Login tab
     registerForm.addEventListener('submit', function(e) {
       e.preventDefault(); // Prevent default form submission
+      
+      const password = passwordInput.value;
+      const regex = /^(?=.*[0-9])(?=.*[!@#$%^&*]).{6,}$/;
+
+      if (!regex.test(password)) {
+        passwordError.classList.remove("hidden");
+        return; // Stop if password invalid
+      } else {
+        passwordError.classList.add("hidden");
+      }
+
       alert("Account created successfully! Please log in.");
       
       // Switch to login tab
@@ -117,19 +138,16 @@
       registerTab.classList.remove('bg-indigo-600','text-white');
       registerTab.classList.add('text-gray-600');
       
-      // Optionally, clear register form
       registerForm.reset();
     });
 
     // Login Form Submit -> Redirect to dashboard (index.html)
     loginForm.addEventListener('submit', function(e) {
-      e.preventDefault(); // Prevent default form submission
-      // Optional: Validate email/password here
+      e.preventDefault(); 
       alert("Login successful! Redirecting to dashboard...");
       window.location.href = "index.html";
     });
   </script>
-
 
 </body>
 </html>
